@@ -1,0 +1,233 @@
+#Create app using with separating widget
+#C:\Users\ARRONIS\AppData\Local\Programs\Python\Python38
+
+ 
+
+import tkinter
+import pyttsx3
+import  pdfminer
+import PyPDF2
+from pathlib import Path
+import win32api
+from tkinter import filedialog
+import os
+
+ 
+
+from tkinter import *  
+from tkinter import ttk  
+
+ 
+
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter.filedialog import askopenfile
+from tkinter.messagebox import showinfo
+import pathlib
+import pyttsx3
+
+ 
+
+root=Tk()
+speak = pyttsx3.init()
+voices = speak.getProperty('voices')
+rate = speak.getProperty('rate') 
+
+ 
+
+jaanu="his.txt"
+
+ 
+
+#App Title  
+root.title("PDF to MP3 Convertor")    
+tabControl=ttk.Notebook(root)
+def fv():
+    speak.setProperty('voice', voices[1].id)
+def mv():
+    speak.setProperty('voice', voices[0].id)
+
+ 
+
+def slow():
+    speak.setProperty('rate', 50)
+def medium():
+    speak.setProperty('rate', 100)
+def fast():
+    speak.setProperty('rate', 200)
+
+ 
+
+def SaveText():
+    file = open(jaanu)
+    data = file.read()
+    widget = Text(fram2)
+    scrollbar = Scrollbar(fram2)
+    scrollbar.pack(side=RIGHT, fill=Y)
+    widget.pack(side=LEFT, fill=Y)
+    scrollbar.config(command=widget.yview)
+    widget.config(yscrollcommand=scrollbar.set)
+    widget.insert(END, data)
+
+ 
+
+def openfile():
+    file=askopenfile(filetypes=[('PDF Files','*.pdf')])
+    pdf_file=open(file.name,'rb')
+    read_pdf=PyPDF2.PdfFileReader(pdf_file)
+    no_of_pages=read_pdf.getNumPages()
+    page=read_pdf.getPage(0)
+    page_content=page.extractText()
+    pathlib.Path("his.txt").write_text(page_content)
+    showinfo("Done","Successfully Converted")
+
+ 
+
+def SaveMp3():
+    fh=open(jaanu,"r")
+    my=fh.read().replace("\n","")
+    language='en'
+    output=gTTS(text=my,lang=language,slow=False)
+    output.save("ledhu.mp3")
+    
+
+ 
+
+def PlayMp3():
+    try:
+        file = open(jaanu)
+        content = file.readlines()
+        c=0
+        for i in content:
+            speak.say(i)
+            
+    except:
+        speak.stop()
+    speak.runAndWait()
+def stopMp3():
+    speak.stop()
+    
+
+ 
+
+ 
+
+menu = Menu(root)
+root.config(menu=menu)
+filemenu = Menu(menu)
+menu.add_cascade(label='File', menu=filemenu)
+filemenu.add_command(label='New')
+filemenu.add_command(label='Open...')
+filemenu.add_separator()
+filemenu.add_command(label='Exit', command=root.quit)
+helpmenu = Menu(menu)
+menu.add_cascade(label='Help', menu=helpmenu)
+helpmenu.add_command(label='About')
+
+ 
+
+ 
+
+
+#tab1
+tab1=ttk.Frame(tabControl)
+tabControl.add(tab1,text='PDF to MP3')
+
+ 
+
+tab2=ttk.Frame(tabControl)
+tabControl.add(tab2,text='Text to MP3')
+tabControl.pack(expand=1, fill="both")
+
+ 
+
+ 
+
+ 
+
+#Create Panedwindow  
+panedwindow=ttk.Panedwindow(root, orient=HORIZONTAL)  
+panedwindow.pack(fill=BOTH, expand=True)  
+#Create Frams  
+fram1=ttk.Frame(panedwindow,width=100,height=300, relief=SUNKEN)
+button = ttk.Button(fram1,text='SELECT FILE', width=25, command=openfile)
+button.pack(padx=5,pady=10)
+
+ 
+
+label=Label(fram1,text="select file: ")
+button=ttk.Button(fram1,text="Select")
+radio = IntVar()  
+lbl = Label(fram1,text = "speed")  
+lbl.pack()
+R1 = Radiobutton(fram1, text="normal", variable=radio, value=1,command=medium)  
+                 
+R1.pack( pady=10)  
+ 
+R2 = Radiobutton(fram1, text="slow", variable=radio, value=2,command=slow)  
+                   
+R2.pack( pady=10 )  
+ 
+R3 = Radiobutton(fram1, text="fast", variable=radio, value=3,command=fast) 
+                   
+R3.pack( pady=10)
+
+ 
+
+label = Label(fram1)  
+label.pack()
+
+ 
+
+v = IntVar()
+#unnava
+Label(fram1,text="""VOICE""",justify = LEFT,padx = 20).pack()
+
+ 
+
+Radiobutton(fram1,
+               text="male",
+               variable=v,
+               value=1,command=mv).pack(padx=3,pady=10)
+
+ 
+
+Radiobutton(fram1,
+               text="female",
+               variable=v,
+               value=2,command=fv).pack(padx=3,pady=10)
+b1 = Button(fram1,text = "save text",command=SaveText, bg='grey', fg='black',width=10)  
+b2 = Button(fram1, text = "save mp3",command=SaveMp3, bg='grey', fg='black',width=10)  
+
+ 
+
+b3 = Button(fram1, text = "play mp3",command=PlayMp3, bg='grey', fg='black',width=10)
+
+ 
+
+b1.pack(padx=5,pady=10)
+b2.pack(padx=5,pady=10)
+b3.pack(padx=5,pady=10)
+
+ 
+
+fram2=ttk.Frame(panedwindow,width=800,height=800, relief=SUNKEN)
+
+ 
+
+pw=ttk.Panedwindow(fram1, orient=VERTICAL)  
+pw.pack(fill=BOTH, expand=True)
+
+ 
+
+panedwindow.add(fram1, weight=1)  
+panedwindow.add(fram2, weight=4)
+#Calling Main()
+root.mainloop()
+
+ 
+
+"""if speak.isBusy():
+                b4 = Button(fram1, text = "stop mp3",command=stopMp3, bg='grey', fg='black',width=10)
+                b4.pack(padx=5,pady=10)
+        """
